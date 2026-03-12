@@ -1,0 +1,60 @@
+{
+	"Generated": "2026-03-12T07:21:53.784Z",
+	"GitHubOrg": "stevenvelozo",
+	"DefaultBranch": "master",
+	"Groups": [
+		{
+			"Name": "Dist",
+			"Key": "dist",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "indoctrinate_content_staging",
+					"Repo": "indoctrinate_content_staging",
+					"Group": "dist",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		},
+		{
+			"Name": "Docs",
+			"Key": "docs",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "css",
+					"Repo": "css",
+					"Group": "docs",
+					"Branch": "master",
+					"HasDocs": true,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": [
+						"css/docuserve.css"
+					]
+				}
+			]
+		},
+		{
+			"Name": "Example_applications",
+			"Key": "example_applications",
+			"Description": "",
+			"Modules": [
+				{
+					"Name": "simple_login",
+					"Repo": "simple_login",
+					"Group": "example_applications",
+					"Branch": "master",
+					"HasDocs": false,
+					"HasCover": false,
+					"Sidebar": [],
+					"DocFiles": []
+				}
+			]
+		}
+	]
+}

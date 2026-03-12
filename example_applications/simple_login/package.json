@@ -1,0 +1,18 @@
+{
+	"name": "orator-authentication-example-simple-login",
+	"version": "0.0.1",
+	"description": "Orator Authentication - Simple Login Example",
+	"main": "Serve-Login-Example.js",
+	"scripts": {
+		"start": "node Serve-Login-Example.js",
+		"test": "echo \"Error: no test specified\" && exit 0"
+	},
+	"author": "steven velozo <steven@velozo.com>",
+	"license": "MIT",
+	"dependencies": {
+		"fable": "^3.1.55",
+		"orator": "^6.0.1",
+		"orator-serviceserver-restify": "^2.0.7",
+		"orator-authentication": "file:../../"
+	}
+}

@@ -1,0 +1,61 @@
+{
+	"name": "orator-authentication",
+	"version": "1.0.0",
+	"description": "Orator server-side cookie-based session authentication with pluggable authenticator and optional OAuth/OIDC support.",
+	"main": "source/Orator-Authentication.js",
+	"scripts": {
+		"test": "npx quack test",
+		"coverage": "npx quack coverage",
+		"start": "node debug/Harness.js",
+		"tests": "npx quack test -g"
+	},
+	"mocha": {
+		"diff": true,
+		"extension": [
+			"js"
+		],
+		"package": "./package.json",
+		"reporter": "spec",
+		"slow": "75",
+		"timeout": "5000",
+		"ui": "tdd",
+		"watch-files": [
+			"source/**/*.js",
+			"test/**/*.js"
+		],
+		"watch-ignore": [
+			"lib/vendor"
+		]
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/stevenvelozo/orator-authentication.git"
+	},
+	"author": "steven velozo <steven@velozo.com>",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/stevenvelozo/orator-authentication/issues"
+	},
+	"homepage": "https://github.com/stevenvelozo/orator-authentication#readme",
+	"dependencies": {
+		"fable-serviceproviderbase": "^3.0.19"
+	},
+	"peerDependencies": {
+		"openid-client": "^6.0.0",
+		"@azure/msal-node": "^2.0.0"
+	},
+	"peerDependenciesMeta": {
+		"openid-client": {
+			"optional": true
+		},
+		"@azure/msal-node": {
+			"optional": true
+		}
+	},
+	"devDependencies": {
+		"fable": "^3.1.55",
+		"orator": "^6.0.1",
+		"orator-serviceserver-restify": "^2.0.7",
+		"quackage": "^1.0.59"
+	}
+}

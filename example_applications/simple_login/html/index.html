@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Simple Login - Orator Authentication Example</title>
+		<!-- Red Rock Mesa Theme — Pict Example App -->
+		<style>
+			*, *::before, *::after { box-sizing: border-box; }
+			body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #FAEDCD; color: #264653; }
+
+			/* --- Header Bar --- */
+			.pict-example-header { display: flex; align-items: stretch; background: #264653; border-bottom: 3px solid #E76F51; }
+			.pict-example-badge { background: #E76F51; color: #fff; padding: 0.6rem 1rem; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 0.5rem; }
+			.pict-example-badge svg { width: 14px; height: 14px; fill: #fff; flex-shrink: 0; }
+			.pict-example-app-name { padding: 0.6rem 1rem; color: #FAEDCD; font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; }
+			.pict-example-module { margin-left: auto; padding: 0.6rem 1rem; color: #D4A373; font-size: 0.75rem; display: flex; align-items: center; letter-spacing: 0.03em; }
+
+			/* --- Content Area --- */
+			.pict-example-content { padding: 1.5rem; max-width: 640px; margin: 0 auto; }
+
+			/* --- Card Panel --- */
+			.login-panel { background: #fff; border: 1px solid #D4A373; border-top: 4px solid #E76F51; border-radius: 6px; padding: 1.25rem; box-shadow: 0 2px 8px rgba(38,70,83,0.08); margin-bottom: 1rem; }
+			.login-panel h2 { margin: 0 0 1rem 0; color: #264653; font-size: 1.1rem; }
+			.login-panel h3 { margin: 1rem 0 0.5rem 0; color: #264653; font-size: 0.95rem; }
+
+			/* --- Form Elements --- */
+			.form-group { margin-bottom: 0.75rem; }
+			.form-group label { display: block; color: #264653; font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem; }
+			.form-group input[type="text"],
+			.form-group input[type="password"] { border: 1px solid #D4C4A8; background: #FFFCF7; padding: 0.45rem 0.6rem; border-radius: 4px; font-size: 0.9rem; color: #264653; width: 100%; }
+			.form-group input:focus { outline: none; border-color: #E76F51; box-shadow: 0 0 0 2px rgba(231,111,81,0.15); }
+
+			/* --- Buttons --- */
+			.btn { border: none; padding: 0.5rem 1.25rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+			.btn-primary { background: #E76F51; color: #fff; }
+			.btn-primary:hover { background: #C45A3E; }
+			.btn-secondary { background: #264653; color: #FAEDCD; }
+			.btn-secondary:hover { background: #1a3340; }
+			.btn-danger { background: #9B2226; color: #fff; }
+			.btn-danger:hover { background: #7d1b1e; }
+			.btn + .btn { margin-left: 0.5rem; }
+
+			/* --- Status Display --- */
+			.status-bar { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 4px; font-size: 0.85rem; margin-bottom: 1rem; }
+			.status-bar.logged-out { background: #FFF3E0; border: 1px solid #D4A373; }
+			.status-bar.logged-in { background: #E8F5E9; border: 1px solid #66BB6A; }
+			.status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+			.status-dot.off { background: #D4A373; }
+			.status-dot.on { background: #43A047; }
+
+			/* --- Log --- */
+			.log-panel { background: #264653; border-radius: 6px; padding: 0.75rem 1rem; color: #FAEDCD; font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace; font-size: 0.78rem; line-height: 1.6; max-height: 220px; overflow-y: auto; }
+			.log-entry { border-bottom: 1px solid rgba(250,237,205,0.1); padding: 0.15rem 0; }
+			.log-entry:last-child { border-bottom: none; }
+			.log-time { color: #D4A373; }
+			.log-ok { color: #81C784; }
+			.log-fail { color: #E76F51; }
+
+			/* --- User Hint Table --- */
+			.hint-table { width: 100%; border-collapse: collapse; margin-top: 0.25rem; }
+			.hint-table th { background: #264653; color: #FAEDCD; padding: 0.4rem 0.75rem; text-align: left; font-size: 0.78rem; }
+			.hint-table td { padding: 0.4rem 0.75rem; border-bottom: 1px solid #E8D9C0; font-size: 0.82rem; }
+			.hint-table tr:nth-child(even) td { background: #FFF9F0; }
+			.hint-table code { background: #FAEDCD; padding: 0.1rem 0.35rem; border-radius: 3px; font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.8rem; }
+
+			/* --- Button Row --- */
+			.button-row { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+		</style>
+	</head>
+	<body>
+		<div class="pict-example-header">
+			<div class="pict-example-badge">
+				<svg viewBox="0 0 16 16"><polygon points="8,1 10,6 16,6 11,9.5 13,15 8,11.5 3,15 5,9.5 0,6 6,6"/></svg>
+				Pict Example
+			</div>
+			<div class="pict-example-app-name">Simple Login</div>
+			<div class="pict-example-module">orator-authentication</div>
+		</div>
+
+		<div class="pict-example-content">
+			<!-- Session Status -->
+			<div id="StatusBar" class="status-bar logged-out">
+				<div id="StatusDot" class="status-dot off"></div>
+				<span id="StatusText">Not logged in</span>
+			</div>
+
+			<!-- Login Form -->
+			<div id="LoginPanel" class="login-panel">
+				<h2>Log In</h2>
+				<div class="form-group">
+					<label for="InputUsername">Username</label>
+					<input type="text" id="InputUsername" placeholder="e.g. admin" autocomplete="off">
+				</div>
+				<div class="form-group">
+					<label for="InputPassword">Password</label>
+					<input type="password" id="InputPassword" placeholder="any password works">
+				</div>
+				<div class="button-row">
+					<button class="btn btn-primary" onclick="doLogin('GET')">Log In (GET)</button>
+					<button class="btn btn-secondary" onclick="doLogin('POST')">Log In (POST)</button>
+				</div>
+
+				<h3>Valid Usernames</h3>
+				<table class="hint-table">
+					<thead><tr><th>LoginID</th><th>Name</th><th>Notes</th></tr></thead>
+					<tbody>
+						<tr><td><code>admin</code></td><td>Admin User</td><td>Administrative account</td></tr>
+						<tr><td><code>jdoe</code></td><td>Jane Doe</td><td>Standard user</td></tr>
+						<tr><td><code>bsmith</code></td><td>Bob Smith</td><td>Standard user</td></tr>
+					</tbody>
+				</table>
+
+				<h3>Denied Passwords</h3>
+				<p style="font-size:0.82rem; margin: 0.25rem 0 0 0;">
+					These passwords are always rejected:
+					<code>abc</code>, <code>badpassword</code>, <code>111</code>
+				</p>
+			</div>
+
+			<!-- Session Panel (shown when logged in) -->
+			<div id="SessionPanel" class="login-panel" style="display:none;">
+				<h2>Session Active</h2>
+				<table class="hint-table">
+					<tbody>
+						<tr><td style="font-weight:600;">User</td><td id="SessionUser">—</td></tr>
+						<tr><td style="font-weight:600;">Session ID</td><td id="SessionID" style="font-family:monospace;font-size:0.78rem;">—</td></tr>
+						<tr><td style="font-weight:600;">User ID</td><td id="SessionUserID">—</td></tr>
+					</tbody>
+				</table>
+				<div class="button-row">
+					<button class="btn btn-primary" onclick="doCheckSession()">Check Session</button>
+					<button class="btn btn-danger" onclick="doLogout('GET')">Log Out (GET)</button>
+					<button class="btn btn-secondary" onclick="doLogout('POST')">Log Out (POST)</button>
+				</div>
+			</div>
+
+			<!-- Activity Log -->
+			<div class="login-panel">
+				<h2>Activity Log</h2>
+				<div id="LogPanel" class="log-panel">
+					<div class="log-entry"><span class="log-time">[ready]</span> Example loaded. Try logging in!</div>
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+//<![CDATA[
+		// --- State ---
+		var _SessionID = null;
+
+		// --- Helpers ---
+		function logTime()
+		{
+			var d = new Date();
+			return d.toLocaleTimeString();
+		}
+
+		function appendLog(pMessage, pSuccess)
+		{
+			var tmpPanel = document.getElementById('LogPanel');
+			var tmpEntry = document.createElement('div');
+			tmpEntry.className = 'log-entry';
+			var tmpClass = (pSuccess === true) ? 'log-ok' : (pSuccess === false) ? 'log-fail' : 'log-time';
+			tmpEntry.innerHTML = '<span class="log-time">[' + logTime() + ']</span> <span class="' + tmpClass + '">' + pMessage + '</span>';
+			tmpPanel.appendChild(tmpEntry);
+			tmpPanel.scrollTop = tmpPanel.scrollHeight;
+		}
+
+		function setLoggedIn(pSessionData)
+		{
+			_SessionID = pSessionData.SessionID;
+			document.getElementById('StatusBar').className = 'status-bar logged-in';
+			document.getElementById('StatusDot').className = 'status-dot on';
+			var tmpName = (pSessionData.UserRecord && pSessionData.UserRecord.FullName) ? pSessionData.UserRecord.FullName : pSessionData.UserRecord.LoginID;
+			document.getElementById('StatusText').textContent = 'Logged in as ' + tmpName;
+			document.getElementById('SessionUser').textContent = tmpName;
+			document.getElementById('SessionID').textContent = _SessionID;
+			document.getElementById('SessionUserID').textContent = pSessionData.UserID || pSessionData.UserRecord.IDUser;
+			document.getElementById('LoginPanel').style.display = 'none';
+			document.getElementById('SessionPanel').style.display = 'block';
+		}
+
+		function setLoggedOut()
+		{
+			_SessionID = null;
+			document.getElementById('StatusBar').className = 'status-bar logged-out';
+			document.getElementById('StatusDot').className = 'status-dot off';
+			document.getElementById('StatusText').textContent = 'Not logged in';
+			document.getElementById('LoginPanel').style.display = 'block';
+			document.getElementById('SessionPanel').style.display = 'none';
+		}
+
+		// --- Actions ---
+		function doLogin(pMethod)
+		{
+			var tmpUser = document.getElementById('InputUsername').value.trim();
+			var tmpPass = document.getElementById('InputPassword').value;
+
+			if (!tmpUser)
+			{
+				appendLog('Please enter a username.', false);
+				return;
+			}
+
+			appendLog('Authenticating <b>' + tmpUser + '</b> via ' + pMethod + '...');
+
+			if (pMethod === 'GET')
+			{
+				fetch('/1.0/Authenticate/' + encodeURIComponent(tmpUser) + '/' + encodeURIComponent(tmpPass || 'nopassword'))
+					.then(function(r) { return r.json(); })
+					.then(handleLoginResponse)
+					.catch(function(e) { appendLog('Network error: ' + e, false); });
+			}
+			else
+			{
+				fetch('/1.0/Authenticate',
+					{
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ UserName: tmpUser, Password: tmpPass || 'nopassword' })
+					})
+					.then(function(r) { return r.json(); })
+					.then(handleLoginResponse)
+					.catch(function(e) { appendLog('Network error: ' + e, false); });
+			}
+		}
+
+		function handleLoginResponse(pData)
+		{
+			if (pData.LoggedIn)
+			{
+				appendLog('Authenticated! Session: <b>' + pData.SessionID + '</b>', true);
+				setLoggedIn(pData);
+			}
+			else
+			{
+				appendLog('Authentication failed: ' + (pData.Error || 'unknown error'), false);
+			}
+		}
+
+		function doCheckSession()
+		{
+			appendLog('Checking session...');
+			fetch('/1.0/CheckSession', { headers: { 'Cookie': 'SessionID=' + _SessionID } })
+				.then(function(r) { return r.json(); })
+				.then(function(pData)
+				{
+					if (pData.LoggedIn)
+					{
+						appendLog('Session valid for user <b>' + (pData.UserRecord ? pData.UserRecord.FullName : 'unknown') + '</b>', true);
+					}
+					else
+					{
+						appendLog('Session is no longer valid.', false);
+						setLoggedOut();
+					}
+				})
+				.catch(function(e) { appendLog('Network error: ' + e, false); });
+		}
+
+		function doLogout(pMethod)
+		{
+			appendLog('Deauthenticating via ' + pMethod + '...');
+			var tmpOptions = { headers: { 'Cookie': 'SessionID=' + _SessionID } };
+			if (pMethod === 'POST')
+			{
+				tmpOptions.method = 'POST';
+			}
+			fetch('/1.0/Deauthenticate', tmpOptions)
+				.then(function(r) { return r.json(); })
+				.then(function(pData)
+				{
+					appendLog('Logged out.', true);
+					setLoggedOut();
+				})
+				.catch(function(e) { appendLog('Network error: ' + e, false); });
+		}
+
+		// Enter key submits the form
+		document.addEventListener('keydown', function(e)
+		{
+			if (e.key === 'Enter' && !_SessionID)
+			{
+				doLogin('POST');
+			}
+		});
+//]]>
+		</script>
+	</body>
+</html>
