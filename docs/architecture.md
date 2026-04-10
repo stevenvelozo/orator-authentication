@@ -15,7 +15,7 @@ Fable (Core)
         ├── Pluggable Authenticator (username/password)
         ├── OAuth Provider Registry (OIDC / MSAL)
         ├── OAuth State Store (CSRF protection)
-        └── OAuth User Mapper (claims → user record)
+        └── OAuth User Mapper (claims -> user record)
 ```
 
 ## Session Lifecycle
@@ -79,7 +79,7 @@ sequenceDiagram
     Auth->>Auth: _consumeOAuthState(state) - validate & delete
     Auth->>Provider: Exchange code for tokens (with PKCE verifier)
     Provider-->>Auth: {Claims, Tokens}
-    Auth->>Auth: _oauthUserMapper(claims, tokens) → UserRecord
+    Auth->>Auth: _oauthUserMapper(claims, tokens) -> UserRecord
     Auth->>Auth: _createSession(userRecord) + store OAuthTokens
     Auth->>Server: Set-Cookie, 302 Redirect to post-login URL
     Server-->>Browser: Redirect to application

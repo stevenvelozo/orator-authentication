@@ -14,9 +14,9 @@ Constructor options take precedence over Fable settings.
 | `RoutePrefix` | `OratorAuthenticationRoutePrefix` | `'/1.0/'` | URL prefix for all authentication routes |
 | `CookieName` | `OratorAuthenticationCookieName` | `'SessionID'` | Name of the session cookie |
 | `SessionTTL` | `OratorAuthenticationSessionTTL` | `86400000` (24h) | Session time-to-live in milliseconds |
-| `CookiePath` | — | `'/'` | Path scope for the session cookie |
-| `CookieHttpOnly` | — | `true` | Set HttpOnly flag on cookie |
-| `CookieSecure` | — | `false` | Set Secure flag on cookie (HTTPS only) |
+| `CookiePath` | -- | `'/'` | Path scope for the session cookie |
+| `CookieHttpOnly` | -- | `true` | Set HttpOnly flag on cookie |
+| `CookieSecure` | -- | `false` | Set Secure flag on cookie (HTTPS only) |
 | `DeniedPasswords` | `OratorAuthenticationDeniedPasswords` | `[]` | Array of passwords to reject immediately |
 
 ## OAuth Settings
@@ -25,7 +25,7 @@ Constructor options take precedence over Fable settings.
 |--------|---------------|---------|-------------|
 | `OAuthStateTTL` | `OratorAuthenticationOAuthStateTTL` | `300000` (5m) | OAuth state parameter TTL in milliseconds |
 | `OAuthPostLoginRedirectURL` | `OratorAuthenticationOAuthPostLoginRedirectURL` | `'/'` | URL to redirect to after successful OAuth login |
-| `OAuthProviders` | — | `{}` | Map of provider name → provider configuration |
+| `OAuthProviders` | -- | `{}` | Map of provider name -> provider configuration |
 
 ## OAuth Provider Configuration
 

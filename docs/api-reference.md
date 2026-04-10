@@ -57,9 +57,9 @@ After instantiation, access it as `tmpFable.OratorAuthentication`.
 
 | Property | Type | Description |
 |----------|------|-------------|
-| `sessionStore` | Map | In-memory session store (SessionID → session object) |
-| `oauthProviders` | object | Registered provider configurations (name → config) |
-| `oauthProviderInstances` | object | Initialized provider instances (name → provider) |
+| `sessionStore` | Map | In-memory session store (SessionID -> session object) |
+| `oauthProviders` | object | Registered provider configurations (name -> config) |
+| `oauthProviderInstances` | object | Initialized provider instances (name -> provider) |
 
 ---
 

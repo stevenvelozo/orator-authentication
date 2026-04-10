@@ -17,7 +17,7 @@ Step-by-step guide to adding Google login to your application.
 
 ## Step 2: Configure the OAuth Consent Screen
 
-1. In the left navigation, go to **APIs & Services** → **OAuth consent screen**
+1. In the left navigation, go to **APIs & Services** -> **OAuth consent screen**
 2. Select **External** user type (unless you have a Google Workspace org)
 3. Click **Create**
 4. Fill in the required fields:
@@ -36,8 +36,8 @@ Step-by-step guide to adding Google login to your application.
 
 ## Step 3: Create OAuth Client Credentials
 
-1. Go to **APIs & Services** → **Credentials**
-2. Click **Create Credentials** → **OAuth client ID**
+1. Go to **APIs & Services** -> **Credentials**
+2. Click **Create Credentials** -> **OAuth client ID**
 3. Select **Web application** as the application type
 4. Enter a name (e.g., "My App Web Client")
 5. Under **Authorized redirect URIs**, add your callback URL:

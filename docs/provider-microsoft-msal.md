@@ -22,7 +22,7 @@ Step-by-step guide to adding Microsoft login with the MSAL provider for advanced
 ## Step 1: Register an Application in Azure AD
 
 1. Go to the [Azure Portal](https://portal.azure.com/)
-2. Navigate to **Microsoft Entra ID** → **App registrations** → **New registration**
+2. Navigate to **Microsoft Entra ID** -> **App registrations** -> **New registration**
 3. Fill in:
    - **Name**: Your application name
    - **Supported account types**: Choose based on your needs
@@ -34,7 +34,7 @@ Step-by-step guide to adding Microsoft login with the MSAL provider for advanced
 
 ## Step 2: Create a Client Secret
 
-1. Go to **Certificates & secrets** → **New client secret**
+1. Go to **Certificates & secrets** -> **New client secret**
 2. Enter a description and choose an expiry
 3. Click **Add**
 4. **Copy the secret value immediately**
@@ -43,7 +43,7 @@ Step-by-step guide to adding Microsoft login with the MSAL provider for advanced
 
 This is where MSAL differs from basic OIDC -- you can request specific Microsoft Graph permissions.
 
-1. Go to **API permissions** → **Add a permission** → **Microsoft Graph**
+1. Go to **API permissions** -> **Add a permission** -> **Microsoft Graph**
 2. Select **Delegated permissions**
 3. Add the permissions you need:
 

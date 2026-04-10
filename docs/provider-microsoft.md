@@ -23,7 +23,7 @@ Use the OpenID Connect approach when:
 
 1. Go to the [Azure Portal](https://portal.azure.com/)
 2. Navigate to **Microsoft Entra ID** (formerly Azure Active Directory)
-3. In the left menu, click **App registrations** → **New registration**
+3. In the left menu, click **App registrations** -> **New registration**
 4. Fill in the form:
    - **Name**: Your application name (e.g., "My App")
    - **Supported account types**: Choose based on your needs:
@@ -53,7 +53,7 @@ After registration, you'll see the **Overview** page:
 ## Step 4: Configure API Permissions
 
 1. In your app registration, go to **API permissions**
-2. Click **Add a permission** → **Microsoft Graph** → **Delegated permissions**
+2. Click **Add a permission** -> **Microsoft Graph** -> **Delegated permissions**
 3. Select:
    - `openid`
    - `profile`
