@@ -56,6 +56,6 @@
 		"fable": "^3.1.55",
 		"orator": "^6.0.1",
 		"orator-serviceserver-restify": "^2.0.7",
-		"quackage": "^1.0.59"
+		"quackage": "^1.1.0"
 	}
 }
