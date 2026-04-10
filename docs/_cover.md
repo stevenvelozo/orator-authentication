@@ -1,4 +1,4 @@
-# Orator Authentication <small>1</small>
+# Orator Authentication
 
 > Server-side cookie-based session authentication with pluggable authenticator and optional OAuth/OIDC
 

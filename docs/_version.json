@@ -1,0 +1,7 @@
+{
+	"Name": "orator-authentication",
+	"Version": "1.0.0",
+	"Description": "Orator server-side cookie-based session authentication with pluggable authenticator and optional OAuth/OIDC support.",
+	"GeneratedAt": "2026-04-10T01:50:00.782Z",
+	"GitCommit": "83743b5"
+}
