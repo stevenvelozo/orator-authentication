@@ -100,6 +100,34 @@ class OratorAuthentication extends libFableServiceProviderBase
 		{
 			return fCallback(null, { LoginID: pUsername, IDUser: 0 });
 		};
+
+		// --- Optional beacon-mesh authenticator ---
+		// Pass options.BeaconAuthenticator (or fable.settings.OratorAuthenticationBeaconAuthenticator)
+		// to delegate /Authenticate credential checking to a beacon mesh.
+		// The provider knows the AUTH_Login dispatch shape; the consumer
+		// supplies a Dispatcher callable. This keeps orator-authentication
+		// decoupled from any specific mesh implementation (ultravisor,
+		// other), and shifts the "swap in a beacon for credentials"
+		// glue from per-consumer code into one named option.
+		let tmpBeaconCfg = (`BeaconAuthenticator` in this.options) ? this.options.BeaconAuthenticator
+			: (`OratorAuthenticationBeaconAuthenticator` in this.fable.settings)
+				? this.fable.settings.OratorAuthenticationBeaconAuthenticator
+				: null;
+		if (tmpBeaconCfg && typeof tmpBeaconCfg === 'object')
+		{
+			try
+			{
+				let libBeaconProvider = require('./Orator-Authentication-Provider-Beacon.js');
+				let tmpProvider = new libBeaconProvider(this.fable, tmpBeaconCfg);
+				this._authenticator = tmpProvider.authenticator;
+				this.log.info('OratorAuthentication: BeaconAuthenticator provider installed.');
+			}
+			catch (pErr)
+			{
+				this.log.warn('OratorAuthentication: BeaconAuthenticator init failed: '
+					+ (pErr && pErr.message) + ' — falling back to default authenticator.');
+			}
+		}
 	}
 
 	/**

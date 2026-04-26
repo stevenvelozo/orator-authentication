@@ -53,10 +53,10 @@
 		}
 	},
 	"devDependencies": {
-		"fable": "^3.1.55",
-		"orator": "^6.0.1",
-		"orator-serviceserver-restify": "^2.0.7",
+		"fable": "^3.1.71",
+		"orator": "^6.1.0",
+		"orator-serviceserver-restify": "^2.0.10",
 		"pict-docuserve": "^0.1.5",
-		"quackage": "^1.1.0"
+		"quackage": "^1.1.2"
 	}
 }
