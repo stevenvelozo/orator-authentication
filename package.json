@@ -1,6 +1,6 @@
 {
 	"name": "orator-authentication",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Orator server-side cookie-based session authentication with pluggable authenticator and optional OAuth/OIDC support.",
 	"main": "source/Orator-Authentication.js",
 	"scripts": {
