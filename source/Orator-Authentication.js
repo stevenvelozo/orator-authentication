@@ -11,6 +11,8 @@
 * OAuth/OIDC support is available via optional provider backends:
 *   - openid-client v6 (any OIDC provider: Google, Okta, Azure AD, etc.)
 *   - @azure/msal-node (advanced Microsoft/Exchange scenarios)
+*   - Built-in plain OAuth 2.0 provider (GitHub, GitLab, Discord, etc. —
+*     no extra dependency, configure with Type: 'oauth2')
 * Install these as needed; if absent, OAuth routes are simply not registered.
 *
 * @author Steven Velozo <steven@velozo.com>
@@ -413,7 +415,13 @@ class OratorAuthentication extends libFableServiceProviderBase
 			});
 
 		// --- POST /1.0/Authenticate ---
-		tmpServiceServer.post(`${tmpPrefix}Authenticate`,
+		// Use the bodyParser-enabled variant when available so `pRequest.body`
+		// is the parsed JSON object; fall back to bare .post() for service
+		// servers that don't expose the convenience method.
+		let tmpAuthPostMethod = (typeof tmpServiceServer.postWithBodyParser === 'function')
+			? 'postWithBodyParser'
+			: 'post';
+		tmpServiceServer[tmpAuthPostMethod](`${tmpPrefix}Authenticate`,
 			(pRequest, pResponse, fNext) =>
 			{
 				let tmpBody = pRequest.body || {};
@@ -554,6 +562,11 @@ class OratorAuthentication extends libFableServiceProviderBase
 			{
 				let OAuthProviderMSAL = require('./Orator-Authentication-Provider-MSAL.js');
 				tmpProvider = new OAuthProviderMSAL(this.fable, tmpConfig);
+			}
+			else if (tmpProviderType === 'oauth2' || tmpProviderType === 'github')
+			{
+				let OAuthProviderOAuth2 = require('./Orator-Authentication-Provider-OAuth2.js');
+				tmpProvider = new OAuthProviderOAuth2(this.fable, tmpConfig);
 			}
 			else
 			{
