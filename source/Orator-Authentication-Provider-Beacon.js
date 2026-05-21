@@ -88,18 +88,30 @@ class BeaconAuthenticatorProvider
 
 	/**
 	 * orator-authentication's setAuthenticator contract:
-	 *   (pUsername, pPassword, fCallback) where fCallback is
-	 *   (pError, pUserRecordOrNull). Returning null on the second
-	 *   arg signals "credentials rejected" and orator-auth's
-	 *   /Authenticate route returns 401 to the client.
+	 *   (pUsername, pPassword, fCallback [, pExtras]) where fCallback
+	 *   is (pError, pUserRecordOrNull) and pExtras is an optional hash
+	 *   of additional fields pulled from the HTTP request body (added
+	 *   for the beacon WebAuth flow: lets a beacon proxy forward
+	 *   `RequestingBeacon` so the auth beacon can audit-log which
+	 *   beacon's web app initiated the login).  pExtras is `null` /
+	 *   absent when orator-auth has no extras to share, so the legacy
+	 *   3-arg signature stays binary-compatible.
 	 *
 	 * We invert async → callback here so the Dispatcher can be either
 	 * a Promise-returning function or a regular function returning a
 	 * resolved value.
 	 */
-	authenticate(pUsername, pPassword, fCallback)
+	authenticate(pUsername, pPassword, fCallback, pExtras)
 	{
 		let tmpSettings = { Username: pUsername, Password: pPassword };
+		// Forward optional context fields that the dispatcher / auth
+		// beacon might care about (currently `RequestingBeacon` for
+		// audit attribution; future fields drop in here without
+		// breaking the existing call sites).
+		if (pExtras && typeof pExtras === 'object' && pExtras.RequestingBeacon)
+		{
+			tmpSettings.RequestingBeacon = pExtras.RequestingBeacon;
+		}
 		Promise.resolve()
 			.then(() => this._Dispatcher(this._Capability, this._LoginAction, tmpSettings))
 			.then((pResult) =>

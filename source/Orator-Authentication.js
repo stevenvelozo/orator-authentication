@@ -325,7 +325,7 @@ class OratorAuthentication extends libFableServiceProviderBase
 	 * @param {object} pResponse - The HTTP response object
 	 * @param {Function} fNext - The next middleware function
 	 */
-	_handleAuthentication(pUsername, pPassword, pResponse, fNext)
+	_handleAuthentication(pUsername, pPassword, pResponse, fNext, pExtras)
 	{
 		// Check denied passwords first
 		if (this.deniedPasswords.indexOf(pPassword) >= 0)
@@ -335,6 +335,13 @@ class OratorAuthentication extends libFableServiceProviderBase
 			return fNext();
 		}
 
+		// Authenticators that opt in can accept a 4th arg containing
+		// optional context fields lifted off the HTTP request body
+		// (currently used by the beacon WebAuth flow to thread
+		// `RequestingBeacon` through to the auth beacon's audit log).
+		// Legacy authenticators with only the 3-arg signature ignore
+		// the extra argument harmlessly — JS treats extra args as
+		// silently discarded.
 		this._authenticator(pUsername, pPassword,
 			(pError, pUserRecord) =>
 			{
@@ -357,7 +364,8 @@ class OratorAuthentication extends libFableServiceProviderBase
 					UserRecord: pUserRecord
 				});
 				return fNext();
-			});
+			},
+			pExtras || null);
 	}
 
 	/**
@@ -434,7 +442,17 @@ class OratorAuthentication extends libFableServiceProviderBase
 					return fNext();
 				}
 
-				return this._handleAuthentication(tmpUsername, tmpPassword, pResponse, fNext);
+				// Forward optional extras (RequestingBeacon, future fields)
+				// from the body so authenticators that opt in can use them.
+				// Beacon-WebAuth proxies set RequestingBeacon to identify
+				// which beacon's web app initiated the login.
+				let tmpExtras = null;
+				if (tmpBody.RequestingBeacon && typeof tmpBody.RequestingBeacon === 'object')
+				{
+					tmpExtras = { RequestingBeacon: tmpBody.RequestingBeacon };
+				}
+
+				return this._handleAuthentication(tmpUsername, tmpPassword, pResponse, fNext, tmpExtras);
 			});
 
 		// --- GET /1.0/CheckSession ---
