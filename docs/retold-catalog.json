@@ -1,60 +1,133 @@
 {
-	"Generated": "2026-04-10T17:22:46.153Z",
+	"Generated": "2026-05-22T05:57:41.635Z",
+	"Mode": "module",
 	"GitHubOrg": "stevenvelozo",
 	"DefaultBranch": "master",
-	"Groups": [
-		{
-			"Name": "Dist",
-			"Key": "dist",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "indoctrinate_content_staging",
-					"Repo": "indoctrinate_content_staging",
-					"Group": "dist",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		},
-		{
-			"Name": "Docs",
-			"Key": "docs",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "css",
-					"Repo": "css",
-					"Group": "docs",
-					"Branch": "master",
-					"HasDocs": true,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": [
-						"css/docuserve.css"
-					]
-				}
-			]
-		},
-		{
-			"Name": "Example_applications",
-			"Key": "example_applications",
-			"Description": "",
-			"Modules": [
-				{
-					"Name": "simple_login",
-					"Repo": "simple_login",
-					"Group": "example_applications",
-					"Branch": "master",
-					"HasDocs": false,
-					"HasCover": false,
-					"Sidebar": [],
-					"DocFiles": []
-				}
-			]
-		}
-	]
+	"Module": {
+		"Name": "orator-authentication",
+		"Repo": "orator-authentication",
+		"Group": "",
+		"Branch": "master",
+		"HasDocs": true,
+		"HasCover": true,
+		"Sidebar": [
+			{
+				"Title": "Getting Started",
+				"Children": [
+					{
+						"Title": "Introduction",
+						"Path": "README.md"
+					},
+					{
+						"Title": "Quick Start",
+						"Path": "quickstart.md"
+					},
+					{
+						"Title": "Architecture",
+						"Path": "architecture.md"
+					}
+				]
+			},
+			{
+				"Title": "Core Concepts",
+				"Children": [
+					{
+						"Title": "Session Management",
+						"Path": "session-management.md"
+					},
+					{
+						"Title": "Pluggable Authenticator",
+						"Path": "pluggable-authenticator.md"
+					},
+					{
+						"Title": "Configuration Reference",
+						"Path": "configuration.md"
+					}
+				]
+			},
+			{
+				"Title": "OAuth / OIDC",
+				"Children": [
+					{
+						"Title": "OAuth Overview",
+						"Path": "oauth-overview.md"
+					},
+					{
+						"Title": "Google (OIDC)",
+						"Path": "provider-google.md"
+					},
+					{
+						"Title": "Microsoft (OIDC)",
+						"Path": "provider-microsoft.md"
+					},
+					{
+						"Title": "Microsoft (MSAL / Exchange)",
+						"Path": "provider-microsoft-msal.md"
+					},
+					{
+						"Title": "OAuth User Mapper",
+						"Path": "oauth-user-mapper.md"
+					}
+				]
+			},
+			{
+				"Title": "API Reference",
+				"Children": [
+					{
+						"Title": "Full API Reference",
+						"Path": "api-reference.md"
+					},
+					{
+						"Title": "setAuthenticator",
+						"Path": "api-setAuthenticator.md"
+					},
+					{
+						"Title": "setOAuthUserMapper",
+						"Path": "api-setOAuthUserMapper.md"
+					},
+					{
+						"Title": "addOAuthProvider",
+						"Path": "api-addOAuthProvider.md"
+					},
+					{
+						"Title": "connectRoutes",
+						"Path": "api-connectRoutes.md"
+					},
+					{
+						"Title": "getSessionForRequest",
+						"Path": "api-getSessionForRequest.md"
+					}
+				]
+			}
+		],
+		"DocFiles": [
+			".nojekyll",
+			"README.md",
+			"_brand.json",
+			"_cover.md",
+			"_sidebar.md",
+			"_topbar.md",
+			"_version.json",
+			"api-addOAuthProvider.md",
+			"api-connectRoutes.md",
+			"api-getSessionForRequest.md",
+			"api-reference.md",
+			"api-setAuthenticator.md",
+			"api-setOAuthUserMapper.md",
+			"architecture.md",
+			"configuration.md",
+			"index.html",
+			"oauth-overview.md",
+			"oauth-user-mapper.md",
+			"pluggable-authenticator.md",
+			"provider-google.md",
+			"provider-microsoft-msal.md",
+			"provider-microsoft.md",
+			"quickstart.md",
+			"retold-catalog.json",
+			"retold-keyword-index.json",
+			"session-management.md"
+		]
+	},
+	"Groups": []
 }
