@@ -64,6 +64,15 @@ class OratorAuthentication extends libFableServiceProviderBase
 		// Consumer-supplied: (pToken, fCallback) => fCallback(pError, pUserRecord|null).
 		this._tokenAuthenticator = null;
 
+		// --- Pluggable session context resolver (opt-in) ---
+		// Lets a consumer re-point an already-authenticated session at a different
+		// "context" (e.g. a tenant persona) WITHOUT a fresh login. The provider
+		// stays schema-agnostic: it knows only an opaque context key and whatever
+		// user record the resolver hands back. Signature:
+		//   (pCurrentUserRecord, pContextKey, fCallback) => fCallback(pError, pUserRecord|null)
+		// A null record means "not permitted" and the session is left unchanged.
+		this._sessionContextResolver = null;
+
 		// --- In-memory session store ---
 		this.sessionStore = new Map();
 
@@ -175,6 +184,27 @@ class OratorAuthentication extends libFableServiceProviderBase
 			return false;
 		}
 		this._tokenAuthenticator = fTokenAuthenticatorFunction;
+		return true;
+	}
+
+	/**
+	 * Replace the session context resolver. When set, the
+	 * `{prefix}Session/Context/:ContextKey` route can re-point an authenticated
+	 * cookie session at a different context (e.g. a tenant persona) without a
+	 * fresh login. The resolver owns all validation; returning a null record
+	 * rejects the switch and leaves the session untouched.
+	 *
+	 * @param {Function} fResolverFunction - (pCurrentUserRecord, pContextKey, fCallback)
+	 *        fCallback signature: (pError, pUserRecord|null)
+	 */
+	setSessionContextResolver(fResolverFunction)
+	{
+		if (typeof fResolverFunction !== 'function')
+		{
+			this.log.error('OratorAuthentication.setSessionContextResolver(): argument must be a function.');
+			return false;
+		}
+		this._sessionContextResolver = fResolverFunction;
 		return true;
 	}
 
@@ -510,6 +540,74 @@ class OratorAuthentication extends libFableServiceProviderBase
 	}
 
 	/**
+	 * Internal: re-point the current authenticated session at a different context
+	 * through the consumer-supplied resolver. Backs the Session/Context route.
+	 * Cookie sessions live in the in-memory store by reference, so replacing
+	 * UserRecord here persists for subsequent requests. Token (bearer) sessions
+	 * are ephemeral and cannot be switched.
+	 *
+	 * @param {object} pRequest - The HTTP request object
+	 * @param {object} pResponse - The HTTP response object
+	 * @param {Function} fNext - The next middleware function
+	 */
+	_handleSessionContextSwitch(pRequest, pResponse, fNext)
+	{
+		if (typeof this._sessionContextResolver !== 'function')
+		{
+			pResponse.send({ Switched: false, Error: 'Session context switching is not enabled.' });
+			return fNext();
+		}
+
+		let tmpSession = this.getSessionForRequest(pRequest);
+		if (!tmpSession || !tmpSession.UserRecord)
+		{
+			pResponse.send({ Switched: false, Error: 'Not authenticated.' });
+			return fNext();
+		}
+		// Bearer-token sessions are ephemeral (never written to the store), so there
+		// is nothing to re-point; a token is scoped to its own context by design.
+		if (tmpSession.ViaToken)
+		{
+			pResponse.send({ Switched: false, Error: 'Context switching is not supported for token sessions.' });
+			return fNext();
+		}
+
+		let tmpContextKey = (pRequest.params && (`ContextKey` in pRequest.params)) ? pRequest.params.ContextKey : null;
+
+		this._sessionContextResolver(tmpSession.UserRecord, tmpContextKey,
+			(pError, pNewUserRecord) =>
+			{
+				if (pError)
+				{
+					this.log.warn(`OratorAuthentication: session context switch error: ${(pError && pError.message) || pError}`);
+					pResponse.send({ Switched: false, Error: 'Context switch failed.' });
+					return fNext();
+				}
+				if (!pNewUserRecord)
+				{
+					pResponse.send({ Switched: false, Error: 'Context not permitted.' });
+					return fNext();
+				}
+
+				// Re-point the stored session at the resolved record. Mutating this
+				// object updates what every later request sees (cookie sessions are
+				// held in sessionStore by reference).
+				tmpSession.UserRecord = pNewUserRecord;
+				tmpSession.LastAccess = Date.now();
+
+				this.log.info(`OratorAuthentication: session [${tmpSession.SessionID}] switched context to [${tmpContextKey}].`);
+				pResponse.send(
+				{
+					Switched: true,
+					SessionID: tmpSession.SessionID,
+					UserID: pNewUserRecord.IDUser || 0,
+					UserRecord: pNewUserRecord
+				});
+				return fNext();
+			});
+	}
+
+	/**
 	 * Register authentication routes on the Orator service server.
 	 *
 	 * @returns {boolean} True if routes were registered successfully
@@ -610,7 +708,21 @@ class OratorAuthentication extends libFableServiceProviderBase
 				return this._handleDeauthentication(pRequest, pResponse, fNext);
 			});
 
-		this.log.info(`OratorAuthentication: Routes registered at ${tmpPrefix}Authenticate, ${tmpPrefix}CheckSession, ${tmpPrefix}Deauthenticate`);
+		// --- POST {prefix}Session/Context/:ContextKey ---
+		// Re-point the current authenticated session at a different context (e.g. a
+		// tenant persona) without re-authenticating. Inert until a resolver is
+		// installed via setSessionContextResolver(); the handler 200s with
+		// Switched:false in that case.
+		let tmpContextPostMethod = (typeof tmpServiceServer.postWithBodyParser === 'function')
+			? 'postWithBodyParser'
+			: 'post';
+		tmpServiceServer[tmpContextPostMethod](`${tmpPrefix}Session/Context/:ContextKey`,
+			(pRequest, pResponse, fNext) =>
+			{
+				return this._handleSessionContextSwitch(pRequest, pResponse, fNext);
+			});
+
+		this.log.info(`OratorAuthentication: Routes registered at ${tmpPrefix}Authenticate, ${tmpPrefix}CheckSession, ${tmpPrefix}Deauthenticate, ${tmpPrefix}Session/Context`);
 
 		// --- OAuth Routes (if providers are configured) ---
 		if (Object.keys(this.oauthProviders).length > 0)

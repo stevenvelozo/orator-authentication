@@ -23,6 +23,7 @@
   - [Full API Reference](api-reference.md)
   - [setAuthenticator](api-setAuthenticator.md)
   - [setOAuthUserMapper](api-setOAuthUserMapper.md)
+  - [setSessionContextResolver](api-setSessionContextResolver.md)
   - [addOAuthProvider](api-addOAuthProvider.md)
   - [connectRoutes](api-connectRoutes.md)
   - [getSessionForRequest](api-getSessionForRequest.md)
